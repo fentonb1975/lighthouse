@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "build:site": "npm run build && rm -rf _site && mkdir -p _site/dist && cp index.html _site/ && cp dist/game.js _site/dist/"
   },
   "devDependencies": {
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "wrangler": "^4.137.0"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "name": "lighthouse",
+  "compatibility_date": "2026-09-01",
+  // Static site only: no Worker script, just serve the assembled _site folder.
+  "assets": {
+    "directory": "./_site"
+  }
+}
