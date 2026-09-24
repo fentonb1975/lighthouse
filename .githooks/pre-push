@@ -1,0 +1,7 @@
+#!/bin/sh
+# Run the tests before every push. If any fail, git cancels the push.
+echo "pre-push: running tests..."
+npm test --silent || {
+  echo "pre-push: tests failed, push cancelled."
+  exit 1
+}
