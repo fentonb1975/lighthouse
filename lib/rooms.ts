@@ -68,7 +68,7 @@ export const rooms: Room[] = [
     walls: {
       south: "The sea is too rough to wade into.",
       east: "Only open water that way.",
-      // Up from the Rocks is the Lamp Room door, which is always open.
+      // Up from the Rocks is the Lamp Room door; see locks below.
       north: "",
       west: "",
     },
@@ -80,6 +80,22 @@ const offsets: Record<Direction, [number, number]> = {
   south: [1, 0],
   east: [0, 1],
   west: [0, -1],
+};
+
+// Doors that stay locked until the player has visited a particular room.
+interface Lock {
+  unlockedByVisiting: string;
+  message: string;
+}
+
+const lampRoomDoor: Lock = {
+  unlockedByVisiting: "kitchen",
+  message: "The lamp room door is locked.",
+};
+
+const locks: Record<string, Partial<Record<Direction, Lock>>> = {
+  rocks: { north: lampRoomDoor },
+  lamp: { south: lampRoomDoor },
 };
 
 export const keyToDirection: Record<string, Direction> = {
@@ -125,6 +141,10 @@ export function roomById(id: string): Room {
 
 export function move(state: GameState, dir: Direction): MoveResult {
   const room = roomById(state.roomId);
+  const lock = locks[room.id]?.[dir];
+  if (lock && !state.visited.includes(lock.unlockedByVisiting)) {
+    return { state, moved: false, message: lock.message };
+  }
   const next = neighbour(room, dir);
   if (!next) {
     return { state, moved: false, message: room.walls[dir] || `You can't go ${dir}.` };
