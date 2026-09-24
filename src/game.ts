@@ -111,6 +111,7 @@ const exitsEl = byId("exits");
 const messageEl = byId("message");
 const mapEl = byId("map");
 const scenesEl = byId("scenes");
+const dpadEl = byId("dpad");
 
 let current: Room = roomAt(1, 1)!;
 
@@ -124,6 +125,11 @@ function render(): void {
 
   const exits = directionOrder.filter((d) => neighbour(current, d));
   exitsEl.textContent = exits.length ? exits.join(", ") : "none";
+
+  // Dim blocked directions, but keep them tappable so the player still hears why.
+  for (const button of Array.from(dpadEl.querySelectorAll("button"))) {
+    button.classList.toggle("closed", !exits.includes(button.dataset.dir as Direction));
+  }
 
   for (const cell of Array.from(mapEl.children) as HTMLElement[]) {
     const here =
@@ -150,6 +156,31 @@ document.addEventListener("keydown", (event) => {
   if (!dir) return;
   event.preventDefault();
   move(dir);
+});
+
+dpadEl.addEventListener("click", (event) => {
+  const button = (event.target as HTMLElement).closest("button");
+  if (button?.dataset.dir) move(button.dataset.dir as Direction);
+});
+
+// Swipe on the picture: the longer axis of the drag picks the direction.
+const minSwipe = 30;
+let swipeStart: { x: number; y: number } | null = null;
+
+scenesEl.addEventListener("touchstart", (event) => {
+  const t = event.touches[0];
+  swipeStart = { x: t.clientX, y: t.clientY };
+}, { passive: true });
+
+scenesEl.addEventListener("touchend", (event) => {
+  if (!swipeStart) return;
+  const t = event.changedTouches[0];
+  const dx = t.clientX - swipeStart.x;
+  const dy = t.clientY - swipeStart.y;
+  swipeStart = null;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < minSwipe) return;
+  if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? "east" : "west");
+  else move(dy > 0 ? "south" : "north");
 });
 
 render();

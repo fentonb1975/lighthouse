@@ -75,6 +75,34 @@
       font-weight: bold;
     }
     .hint { font-size: 0.8rem; color: var(--muted); margin: 0; }
+    .dpad {
+      display: grid;
+      grid-template-columns: repeat(3, 3.5rem);
+      grid-template-rows: repeat(3, 3.5rem);
+      grid-template-areas: ". north ." "west . east" ". south .";
+      gap: 6px;
+      justify-content: center;
+      margin: 0 0 1.25rem;
+    }
+    .dpad button {
+      font: inherit;
+      font-size: 1.4rem;
+      color: var(--text);
+      background: #22384a;
+      border: 1px solid #2c4254;
+      border-radius: 10px;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .dpad button:active { background: var(--accent); color: var(--bg); }
+    .dpad button.closed { opacity: 0.35; }
+    .dpad [data-dir="north"] { grid-area: north; }
+    .dpad [data-dir="south"] { grid-area: south; }
+    .dpad [data-dir="east"] { grid-area: east; }
+    .dpad [data-dir="west"] { grid-area: west; }
+    /* Let the picture take swipes without the page scrolling or zooming. */
+    #scenes { touch-action: none; }
     [hidden] { display: none !important; }
     .defs { position: absolute; width: 0; height: 0; overflow: hidden; }
     .scene { margin: 0 0 1.25rem; }
@@ -217,13 +245,19 @@
     <p id="room-description"></p>
     <p class="exits">You can go: <strong id="exits"></strong></p>
     <p id="message" class="message" aria-live="polite"></p>
+    <div class="dpad" id="dpad">
+      <button type="button" data-dir="north" aria-label="Go north">&uarr;</button>
+      <button type="button" data-dir="west" aria-label="Go west">&larr;</button>
+      <button type="button" data-dir="east" aria-label="Go east">&rarr;</button>
+      <button type="button" data-dir="south" aria-label="Go south">&darr;</button>
+    </div>
     <div id="map" aria-hidden="true">
       <div data-row="0" data-col="0">Spiral Stair</div>
       <div data-row="0" data-col="1">Lamp Room</div>
       <div data-row="1" data-col="0">Keeper's Kitchen</div>
       <div data-row="1" data-col="1">Rocks</div>
     </div>
-    <p class="hint">Use the arrow keys to move.</p>
+    <p class="hint">Tap the arrows or swipe the picture to move. Arrow keys work too.</p>
   </main>
   <script src="dist/game.js"></script>
 </body>
