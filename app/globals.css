@@ -1,0 +1,126 @@
+:root {
+  --bg: #0f1a24;
+  --panel: #172633;
+  --text: #e6e1d6;
+  --muted: #8fa3b3;
+  --accent: #f2c14e;
+  --blocked: #e8806b;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+  padding: 1.5rem;
+}
+main {
+  width: 100%;
+  max-width: 34rem;
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 1.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+h1 {
+  margin: 0 0 0.25rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: normal;
+}
+h2 {
+  margin: 0 0 1rem;
+  font-size: 2.6rem;
+  line-height: 1.1;
+  color: var(--accent);
+}
+#room-description {
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+}
+.exits { margin: 0 0 1rem; color: var(--muted); }
+.exits strong { color: var(--text); text-transform: capitalize; }
+.message { min-height: 1.5em; margin: 0 0 1.25rem; font-style: italic; color: var(--muted); }
+.message.blocked { color: var(--blocked); }
+#map {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 1rem;
+}
+#map div {
+  padding: 0.6rem;
+  border: 1px solid #2c4254;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--muted);
+}
+#map div.here {
+  border-color: var(--accent);
+  color: var(--bg);
+  background: var(--accent);
+  font-weight: bold;
+}
+.hint { font-size: 0.8rem; color: var(--muted); margin: 0; }
+.dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 3.5rem);
+  grid-template-rows: repeat(3, 3.5rem);
+  grid-template-areas: ". north ." "west . east" ". south .";
+  gap: 6px;
+  justify-content: center;
+  margin: 0 0 1.25rem;
+}
+.dpad button {
+  font: inherit;
+  font-size: 1.4rem;
+  color: var(--text);
+  background: #22384a;
+  border: 1px solid #2c4254;
+  border-radius: 10px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.dpad button:active { background: var(--accent); color: var(--bg); }
+.dpad button.closed { opacity: 0.35; }
+.dpad [data-dir="north"] { grid-area: north; }
+.dpad [data-dir="south"] { grid-area: south; }
+.dpad [data-dir="east"] { grid-area: east; }
+.dpad [data-dir="west"] { grid-area: west; }
+/* Let the picture take swipes without the page scrolling or zooming. */
+#scenes { touch-action: none; }
+[hidden] { display: none !important; }
+.defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.scene { margin: 0 0 1.25rem; }
+.scene svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: #f3ead6;
+  border-radius: 8px;
+}
+/* Shared hand-drawn look: dark ink outlines, round ends, wobbled by the filter. */
+.scene .art { filter: url(#wobble); }
+.scene .ink,
+.scene .art path,
+.scene .art rect,
+.scene .art circle,
+.scene .art ellipse,
+.scene .art line,
+.scene .art polyline {
+  stroke: #3b2f2a;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.scene .art .thin { stroke-width: 1.2; }
+.scene .art .none { stroke: none; }
+.scene .art .line { fill: none; }

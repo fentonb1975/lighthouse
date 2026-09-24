@@ -1,8 +1,12 @@
 {
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Same Worker name as before, so the site stays at lighthouse.fentonb.workers.dev.
   "name": "lighthouse",
+  "main": ".open-next/worker.js",
   "compatibility_date": "2026-09-01",
-  // Static site only: no Worker script, just serve the assembled _site folder.
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
-    "directory": "./_site"
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
   }
 }
