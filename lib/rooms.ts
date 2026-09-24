@@ -39,7 +39,8 @@ export const rooms: Room[] = [
     walls: {
       north: "Only glass and sky above. There's nowhere higher to go.",
       east: "The windows are sealed against the wind.",
-      south: "The gallery rail stops you. It's a long drop to the rocks.",
+      // Down from the Lamp Room is the same door back to the Rocks.
+      south: "",
       west: "",
     },
   },
@@ -67,8 +68,8 @@ export const rooms: Room[] = [
     walls: {
       south: "The sea is too rough to wade into.",
       east: "Only open water that way.",
-      // Up from the Rocks is the Lamp Room gallery, which can't be reached from outside.
-      north: "The tower wall is sheer. You can't climb up to the lamp from here.",
+      // Up from the Rocks is the Lamp Room door; see locks below.
+      north: "",
       west: "",
     },
   },
@@ -79,6 +80,22 @@ const offsets: Record<Direction, [number, number]> = {
   south: [1, 0],
   east: [0, 1],
   west: [0, -1],
+};
+
+// Doors that stay locked until the player has visited a particular room.
+interface Lock {
+  unlockedByVisiting: string;
+  message: string;
+}
+
+const lampRoomDoor: Lock = {
+  unlockedByVisiting: "kitchen",
+  message: "The lamp room door is locked.",
+};
+
+const locks: Record<string, Partial<Record<Direction, Lock>>> = {
+  rocks: { north: lampRoomDoor },
+  lamp: { south: lampRoomDoor },
 };
 
 export const keyToDirection: Record<string, Direction> = {
@@ -99,4 +116,44 @@ export function neighbour(room: Room, dir: Direction): Room | undefined {
   if (room.walls[dir]) return undefined;
   const [dr, dc] = offsets[dir];
   return roomAt(room.row + dr, room.col + dc);
+}
+
+// Everything the rules need to know about a game in progress. Plain data, no browser needed.
+export interface GameState {
+  roomId: string;
+  // Rooms the player has been in, including the current one.
+  visited: string[];
+}
+
+export interface MoveResult {
+  state: GameState;
+  moved: boolean;
+  message: string;
+}
+
+export const startState: GameState = { roomId: "rocks", visited: ["rocks"] };
+
+export function roomById(id: string): Room {
+  const room = rooms.find((r) => r.id === id);
+  if (!room) throw new Error(`Unknown room: ${id}`);
+  return room;
+}
+
+export function move(state: GameState, dir: Direction): MoveResult {
+  const room = roomById(state.roomId);
+  const lock = locks[room.id]?.[dir];
+  if (lock && !state.visited.includes(lock.unlockedByVisiting)) {
+    return { state, moved: false, message: lock.message };
+  }
+  const next = neighbour(room, dir);
+  if (!next) {
+    return { state, moved: false, message: room.walls[dir] || `You can't go ${dir}.` };
+  }
+  const visited = state.visited.includes(next.id) ? state.visited : [...state.visited, next.id];
+  return { state: { roomId: next.id, visited }, moved: true, message: `You go ${dir}.` };
+}
+
+// Directions the player can currently move in.
+export function openExits(state: GameState): Direction[] {
+  return directionOrder.filter((d) => move(state, d).moved);
 }

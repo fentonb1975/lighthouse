@@ -20,6 +20,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Test
+        run: npm test
+
       # Builds the Next.js app with the OpenNext adapter, then deploys it with wrangler.
       - name: Build and deploy
         env:

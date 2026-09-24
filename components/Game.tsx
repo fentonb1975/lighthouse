@@ -4,16 +4,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { SketchFilter, scenes } from "@/components/Scenes";
 import {
   type Direction,
-  type Room,
-  directionOrder,
+  type GameState,
   keyToDirection,
-  neighbour,
-  roomAt,
+  move as applyMove,
+  openExits,
+  roomById,
   rooms,
+  startState,
 } from "@/lib/rooms";
 
-interface GameState {
-  room: Room;
+interface ViewState {
+  game: GameState;
   message: string;
   blocked: boolean;
 }
@@ -26,18 +27,17 @@ const dpadOrder: Direction[] = ["north", "west", "east", "south"];
 const minSwipe = 30;
 
 export default function Game() {
-  const [state, setState] = useState<GameState>({
-    room: roomAt(1, 1)!,
+  const [state, setState] = useState<ViewState>({
+    game: startState,
     message: "",
     blocked: false,
   });
   const swipeStart = useRef<{ x: number; y: number } | null>(null);
 
   const move = useCallback((dir: Direction) => {
-    setState(({ room }) => {
-      const next = neighbour(room, dir);
-      if (next) return { room: next, message: `You go ${dir}.`, blocked: false };
-      return { room, message: room.walls[dir] || `You can't go ${dir}.`, blocked: true };
+    setState(({ game }) => {
+      const result = applyMove(game, dir);
+      return { game: result.state, message: result.message, blocked: !result.moved };
     });
   }, []);
 
@@ -69,8 +69,9 @@ export default function Game() {
     else move(dy > 0 ? "south" : "north");
   };
 
-  const { room, message, blocked } = state;
-  const exits = directionOrder.filter((d) => neighbour(room, d));
+  const { game, message, blocked } = state;
+  const room = roomById(game.roomId);
+  const exits = openExits(game);
 
   return (
     <main>
@@ -109,7 +110,7 @@ export default function Game() {
 
       <div id="map" aria-hidden="true">
         {rooms.map((r) => (
-          <div key={r.id} className={r === room ? "here" : undefined}>
+          <div key={r.id} className={r.id === room.id ? "here" : undefined}>
             {r.name}
           </div>
         ))}
