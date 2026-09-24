@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "The Lighthouse",
-  description: "A tiny text adventure set in a lighthouse.",
+  title: "The Robot",
+  description: "Spin a hand-drawn robot on its turntable.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

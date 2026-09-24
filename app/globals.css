@@ -43,84 +43,17 @@ h2 {
   line-height: 1.6;
   margin: 0 0 1.25rem;
 }
-.exits { margin: 0 0 1rem; color: var(--muted); }
-.exits strong { color: var(--text); text-transform: capitalize; }
 .message { min-height: 1.5em; margin: 0 0 1.25rem; font-style: italic; color: var(--muted); }
 .message.blocked { color: var(--blocked); }
-#map {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin-bottom: 1rem;
-}
-#map div {
-  padding: 0.6rem;
-  border: 1px solid #2c4254;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  text-align: center;
-  color: var(--muted);
-}
-#map div.here {
-  border-color: var(--accent);
-  color: var(--bg);
-  background: var(--accent);
-  font-weight: bold;
-}
 .hint { font-size: 0.8rem; color: var(--muted); margin: 0; }
-.dpad {
-  display: grid;
-  grid-template-columns: repeat(3, 3.5rem);
-  grid-template-rows: repeat(3, 3.5rem);
-  grid-template-areas: ". north ." "west . east" ". south .";
-  gap: 6px;
-  justify-content: center;
-  margin: 0 0 1.25rem;
-}
-.dpad button {
-  font: inherit;
-  font-size: 1.4rem;
-  color: var(--text);
-  background: #22384a;
-  border: 1px solid #2c4254;
-  border-radius: 10px;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-.dpad button:active { background: var(--accent); color: var(--bg); }
-.dpad button.closed { opacity: 0.35; }
-.dpad [data-dir="north"] { grid-area: north; }
-.dpad [data-dir="south"] { grid-area: south; }
-.dpad [data-dir="east"] { grid-area: east; }
-.dpad [data-dir="west"] { grid-area: west; }
-/* Let the picture take swipes without the page scrolling or zooming. */
-#scenes { touch-action: none; }
 [hidden] { display: none !important; }
-.defs { position: absolute; width: 0; height: 0; overflow: hidden; }
 .scene { margin: 0 0 1.25rem; }
-.scene svg {
-  display: block;
+/* The 3D robot's canvas, in the same frame the drawings used. */
+.scene .stage {
   width: 100%;
-  height: auto;
   aspect-ratio: 16 / 9;
-  background: #f3ead6;
+  background: #e8dcc2;
   border-radius: 8px;
+  overflow: hidden;
 }
-/* Shared hand-drawn look: dark ink outlines, round ends, wobbled by the filter. */
-.scene .art { filter: url(#wobble); }
-.scene .ink,
-.scene .art path,
-.scene .art rect,
-.scene .art circle,
-.scene .art ellipse,
-.scene .art line,
-.scene .art polyline {
-  stroke: #3b2f2a;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.scene .art .thin { stroke-width: 1.2; }
-.scene .art .none { stroke: none; }
-.scene .art .line { fill: none; }
+.scene .stage canvas { display: block; width: 100%; height: 100%; }
